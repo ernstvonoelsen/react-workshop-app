@@ -1,8 +1,9 @@
-import React, { CSSProperties, useState } from 'react';
-import logo from './logo.svg';
+import React, { CSSProperties, useState, useEffect } from 'react';
+import { Provider, useDispatch } from 'react-redux';
+import { createStore } from 'redux';
 import './App.css';
-import internal from 'stream';
-import { NumericLiteral } from 'typescript';
+import { CardState } from './cardState';
+import { GetCardOpen, GetCardMatch, GetCardFront, reducer, CardClicked } from './Reducer';
 
 const cardStyle : CSSProperties = {
   border: '1px solid black',
@@ -12,10 +13,27 @@ const cardStyle : CSSProperties = {
   textAlign: 'center',
 }
 
-export const Card = (props:{front: string, matched: boolean, faceUp: boolean, onClick: ()=>void}) =>{
-  return <div onClick={() => {if(!props.matched) props.onClick();}} style={cardStyle} className="card">
+const store = createStore(reducer);
+
+export const Card = (props:{index: number}) =>{
+  const open = GetCardOpen(props.index);
+  const matched = GetCardMatch(props.index);
+  const front = GetCardFront(props.index);
+  console.log({'open': open, 'matched': matched, 'front': front});
+  const dispatch = useDispatch();
+  // useEffect(() => {
+    // const fetchData = async () => {
+    // const response = await fetch(
+    // "https://external-click-counter.com/howmanyofthoseclickswegot"
+    // );
+    // const parsedResponse = await response.json();
+    
+    // };
+    // fetchData();
+    // }, []);
+  return <div onClick={() => {if(!matched) dispatch({type:'CARD_CLICKED', indexClicked:props.index});}} style={cardStyle} className="card">
     <span >
-      { props.faceUp ? props.front : (props.matched ? 'Matched Card' : 'Card') }
+      { open ? front : (matched ? 'Matched Card' : 'Card') }
     </span>
   </div>
 }
@@ -53,61 +71,32 @@ const checkCard = (index: number, faces : Array<CardState>, setFaces: React.Disp
   }
 
 }
-class CardState{
-  constructor(front : string){
-    this.front = front;
-  }
-  open: boolean = false;
-  front: string = '';
-  matched: boolean = false;
-  public Clone(): CardState{
-    const clone = new CardState(this.front);
-    clone.open = this.open;
-    clone.matched = this.matched;
-    return clone;
-  }
-}
 
 export const Field = (props:any) =>{
-  const [faces, setFaces] = useState([new CardState('A'), new CardState('A'), new CardState('B'), new CardState('B'),
-  new CardState('C'), new CardState('C'), new CardState('D'),new CardState('D')]);
   return <div>
     <div style={{'display': 'flex'}}>
-      <Card front={faces[0].front} faceUp={faces[0].open} matched={faces[0].matched} onClick={()=>{
-        checkCard(0, faces, setFaces)
-      }}/>
-      <Card front={faces[1].front} faceUp={faces[1].open} matched={faces[1].matched} onClick={()=>{
-        checkCard(1, faces, setFaces)
-      }}/>
-      <Card front={faces[2].front} faceUp={faces[2].open} matched={faces[2].matched} onClick={()=>{
-        checkCard(2, faces, setFaces)
-      }}/>
-      <Card front={faces[3].front} faceUp={faces[3].open} matched={faces[3].matched} onClick={()=>{
-        checkCard(3, faces, setFaces)
-      }}/>
+      <Card index={0}/>
+      <Card index={1}/>
+      <Card index={2}/>
+      <Card index={3}/>
     </div>
     <div style={{'display': 'flex'}}>
-      <Card front={faces[4].front} faceUp={faces[4].open} matched={faces[4].matched} onClick={()=>{
-        checkCard(4, faces, setFaces)
-      }}/>
-      <Card front={faces[5].front} faceUp={faces[5].open} matched={faces[5].matched} onClick={()=>{
-        checkCard(5, faces, setFaces)
-      }}/>
-      <Card front={faces[6].front} faceUp={faces[6].open} matched={faces[6].matched} onClick={()=>{
-        checkCard(6, faces, setFaces)
-      }}/>
-      <Card front={faces[7].front} faceUp={faces[7].open} matched={faces[7].matched} onClick={()=>{
-        checkCard(7, faces, setFaces)
-      }}/>
+      <Card index={4}/>
+      <Card index={5}/>
+      <Card index={6}/>
+      <Card index={7}/>
     </div>
+    
   </div>
 }
 
 
 export function App() {
   return (
-    <div className="App">
-        <Field/>
-    </div>
+    <Provider store={store}>
+      <div className="App">
+          <Field/>
+      </div>
+    </Provider>
   );
 }
