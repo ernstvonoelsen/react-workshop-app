@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import MyComponent from './MyComponent';
 
 function App() {
   return (
@@ -8,7 +9,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload &ndash; but test before you push.
+          Edit <code>src/App.tsx</code> and save to reload.
         </p>
         <a
           className="App-link"
@@ -18,6 +19,9 @@ function App() {
         >
           Learn React
         </a>
+        <MyComponent name={"Ernst"} >
+          <div>Nested!</div>
+        </MyComponent>
       </header>
     </div>
   );
