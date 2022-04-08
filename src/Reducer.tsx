@@ -17,7 +17,7 @@ const generateSet = () : Array<CardState> =>{
     }
     return result;
 }
-interface cardGameState extends DefaultRootState {
+export interface cardGameState extends DefaultRootState {
     cardStates: Array<CardState>;
 }
 const initialState: cardGameState = {
@@ -60,7 +60,7 @@ export const reducer = (state = initialState, action: Action) => {
                         o.open = false;
                     }
                 }
-                state.cardStates = newf;
+                return { cardStates: newf};
             }
             else{
                 const newf = [...state.cardStates];
@@ -68,9 +68,8 @@ export const reducer = (state = initialState, action: Action) => {
                     newf[k].open = false;
                 }
                 newf[index].open = true;
-                state.cardStates = newf;
+                return { cardStates: newf};
             }
-            return state;
         default:
             return state;
     }

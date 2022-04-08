@@ -1,9 +1,9 @@
 import React, { CSSProperties, useState, useEffect } from 'react';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { createStore } from 'redux';
 import './App.css';
 import { CardState } from './cardState';
-import { GetCardOpen, GetCardMatch, GetCardFront, reducer, CardClicked } from './Reducer';
+import { cardGameState, reducer } from './Reducer';
 
 const cardStyle : CSSProperties = {
   border: '1px solid black',
@@ -15,11 +15,9 @@ const cardStyle : CSSProperties = {
 
 const store = createStore(reducer);
 
-export const Card = (props:{index: number}) =>{
-  const open = GetCardOpen(props.index);
-  const matched = GetCardMatch(props.index);
-  const front = GetCardFront(props.index);
-  console.log({'open': open, 'matched': matched, 'front': front});
+export const Card = (props:{cardState: CardState, index: number}) =>{
+  
+  console.log(props.cardState);
   const dispatch = useDispatch();
   // useEffect(() => {
     // const fetchData = async () => {
@@ -31,9 +29,9 @@ export const Card = (props:{index: number}) =>{
     // };
     // fetchData();
     // }, []);
-  return <div onClick={() => {if(!matched) dispatch({type:'CARD_CLICKED', indexClicked:props.index});}} style={cardStyle} className="card">
+  return <div onClick={() => {if(!props.cardState.matched) dispatch({type:'CARD_CLICKED', indexClicked:props.index});}} style={cardStyle} className="card">
     <span >
-      { open ? front : (matched ? 'Matched Card' : 'Card') }
+      { props.cardState.open ? props.cardState.front : (props.cardState.matched ? 'Matched Card' : 'Card') }
     </span>
   </div>
 }
@@ -73,18 +71,22 @@ const checkCard = (index: number, faces : Array<CardState>, setFaces: React.Disp
 }
 
 export const Field = (props:any) =>{
+  const cardStates = useSelector((state: cardGameState )=>{
+    console.log("received Cardstates");
+    return state.cardStates;
+  } );
   return <div>
     <div style={{'display': 'flex'}}>
-      <Card index={0}/>
-      <Card index={1}/>
-      <Card index={2}/>
-      <Card index={3}/>
+      <Card cardState={cardStates[0]} index={0}/>
+      <Card cardState={cardStates[1]} index={1}/>
+      <Card cardState={cardStates[2]} index={2}/>
+      <Card cardState={cardStates[3]} index={3}/>
     </div>
     <div style={{'display': 'flex'}}>
-      <Card index={4}/>
-      <Card index={5}/>
-      <Card index={6}/>
-      <Card index={7}/>
+      <Card cardState={cardStates[4]} index={4}/>
+      <Card cardState={cardStates[5]} index={5}/>
+      <Card cardState={cardStates[6]} index={6}/>
+      <Card cardState={cardStates[7]} index={7}/>
     </div>
     
   </div>
@@ -93,10 +95,10 @@ export const Field = (props:any) =>{
 
 export function App() {
   return (
-    <Provider store={store}>
-      <div className="App">
-          <Field/>
-      </div>
-    </Provider>
+    <div className="App">
+      <Provider store={store}>
+        <Field/>
+      </Provider>
+    </div>
   );
 }
