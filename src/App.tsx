@@ -23,7 +23,7 @@ export const Card = (props:{front: string, matched: boolean, faceUp: boolean, on
 
 const checkCard = (index: number, faces : Array<CardState>, setFaces: React.Dispatch<React.SetStateAction<CardState[]>>) =>{
   const openCards = faces.filter(f => f.open);
-  console.log("open " + openCards);
+  console.log("open " + openCards.length);
   if(openCards.length < 2){
     const newf = [...faces];
     const tempMatch =  newf[index].matched;
@@ -32,14 +32,18 @@ const checkCard = (index: number, faces : Array<CardState>, setFaces: React.Disp
     newf[index] = new CardState(tempFront);
     newf[index].open = !tempOpen;
     newf[index].matched = tempMatch;
+    var newOpen = newf.filter(f => f.open);
+    console.log("new Open " + newOpen.length);
+    if(newOpen.length === 2 && newOpen[0].front === newOpen[1].front){
+      newOpen[0].matched = true;
+      newOpen[1].matched = true;
+      for(const o of newOpen){
+        o.open = false;
+      }
+    }
     setFaces(newf);
   }
   else{
-    if(openCards[0].front === openCards[1].front){
-      openCards[0].matched = true;
-      openCards[1].matched = true;
-    }
-
     const newf = [...faces];
     for(var k = 0; k < 7; k++){
       newf[k].open = false;
@@ -56,6 +60,12 @@ class CardState{
   open: boolean = false;
   front: string = '';
   matched: boolean = false;
+  public Clone(): CardState{
+    const clone = new CardState(this.front);
+    clone.open = this.open;
+    clone.matched = this.matched;
+    return clone;
+  }
 }
 
 export const Field = (props:any) =>{
@@ -76,20 +86,20 @@ export const Field = (props:any) =>{
         checkCard(3, faces, setFaces)
       }}/>
     </div>
-    {/* <div style={{'display': 'flex'}}>
-      <Card front={'B'} faceUp={faces[4]}onClick={()=>{
+    <div style={{'display': 'flex'}}>
+      <Card front={faces[4].front} faceUp={faces[4].open} matched={faces[4].matched} onClick={()=>{
         checkCard(4, faces, setFaces)
       }}/>
-      <Card front={'D'} faceUp={faces[5]}onClick={()=>{
+      <Card front={faces[5].front} faceUp={faces[5].open} matched={faces[5].matched} onClick={()=>{
         checkCard(5, faces, setFaces)
       }}/>
-      <Card front={'C'} faceUp={faces[6]}onClick={()=>{
+      <Card front={faces[6].front} faceUp={faces[6].open} matched={faces[6].matched} onClick={()=>{
         checkCard(6, faces, setFaces)
       }}/>
-      <Card front={'D'} faceUp={faces[7]}onClick={()=>{
+      <Card front={faces[7].front} faceUp={faces[7].open} matched={faces[7].matched} onClick={()=>{
         checkCard(7, faces, setFaces)
       }}/>
-    </div> */}
+    </div>
   </div>
 }
 
