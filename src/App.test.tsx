@@ -10,7 +10,7 @@ test('renders Card string as implemented componend', () => {
 });
 
 test('renders Card object', () => {
-  render(<Card content={'1'}/>);
+  render(<Card front={'1'} back={'1'}/>);
   const card = screen.getByText('1');
   expect(card).toBeInTheDocument();
 })
