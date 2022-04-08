@@ -35,10 +35,11 @@ export const Field = (props:any) =>{
   </div>
 }
 
+
 export function App() {
   return (
     <div className="App">
-      <Field />
+        <Field/>
     </div>
   );
 }
