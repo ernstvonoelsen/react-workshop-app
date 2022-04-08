@@ -1,9 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import {App, Card} from './App';
 
-test('renders learn react link', () => {
+test('renders Card string as implemented componend', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const cardElement = screen.getByText(/CARD/i);
+  expect(cardElement).toBeInTheDocument();
 });
+
+test('renders Card object', () => {
+  render(<Card index={1}/>);
+  const card = screen.getByText(/CARD/i);
+  expect(card).toBeInTheDocument();
+})
